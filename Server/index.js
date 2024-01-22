@@ -7,6 +7,9 @@ require;
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/auth", authRoutes);
+app.use("/api/messages", messageRoutes);
+
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
