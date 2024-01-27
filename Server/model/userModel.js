@@ -10,13 +10,13 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
-    unique: true,
+    required: false,
+    unique: false,
     max: 50,
   },
   password: {
     type: String,
-    required: true,
+    required: false,
     min: 8,
   },
   isAvatarImageSet: {
