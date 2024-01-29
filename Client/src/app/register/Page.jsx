@@ -23,9 +23,8 @@ const Register = () => {
   const router = useRouter();
   const [values, setValues] = useState({
     name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    username: "",
+   
   });
   const checkLocalStorage = () => {
     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
@@ -43,36 +42,46 @@ const Register = () => {
   };
 
   const handleValidation = () => {
-    const { password, confirmPassword, username, email } = values;
-    if (password !== confirmPassword) {
-      toast.error(
-        "Password and confirm password should be same.",
-        toastOptions
-      );
-      return false;
-    } else if (username.length < 3) {
+    const { username } = values;
+    if (username.length < 3) {
       toast.error(
         "Username should be greater than 3 characters.",
         toastOptions
       );
-      return false;
-    } else if (password.length < 8) {
-      toast.error(
-        "Password should be equal or greater than 8 characters.",
-        toastOptions
-      );
-      return false;
-    } else if (email === "") {
-      toast.error("Email is required.", toastOptions);
       return false;
     }
 
     return true;
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (handleValidation()) {
+      let currentUser = await window.mina?.getAccounts();
+      if (currentUser.length == 0) {
+        await window.mina.requestAccounts().catch((err) => err);
+        currentUser = await window.mina?.getAccounts();
+      }
+
+      const content = `Click "Sign" to sign in. No password needed!
+
+     This request will not trigger a blockchain transaction or cost any gas fees.
+
+      I accept the Auro Test zkApp Terms of Service: ${window.location.href}
+
+     address: ${currentUser[0]}
+     iat: ${new Date().getTime()}`;
+
+      const signContent = {
+        message: content,
+      };
+
+      const signResult = await window.mina
+        ?.signMessage(signContent)
+        .catch((err) => err);
+
+      console.log(signResult);
+
       const { email, username, password } = values;
       const { data } = await axios.post(registerRoute, {
         username,
@@ -88,7 +97,7 @@ const Register = () => {
           process.env.REACT_APP_LOCALHOST_KEY,
           JSON.stringify(data.user)
         );
-        router.push("/setAvatar");
+        navigate("/");
       }
     }
   };
@@ -97,7 +106,7 @@ const Register = () => {
     <div className="h-screen  flex flex-col bg-[#131324] items-center justify-center w-auto">
       <form
         className="flex flex-col gap-8 rounded-3xl bg-[#00000076] px-12 py-20"
-        onSubmit={(event) => handleSubmit(event)}
+        onSubmit={(e) => handleSubmit(e)}
       >
         <div className="flex items-center justify-center w-auto">
           <Image src={Logo} alt="logo" className="h-10" />
@@ -105,33 +114,18 @@ const Register = () => {
 
         <input
           type="text"
+          placeholder="Full Name"
+          name="name"
+          onChange={(e) => handleChange(e)}
+          className="bg-transparent p-4 rounded-lg border-solid border-2 border-[#4e0eff] text-white text-lg focus:border-2 focus:border-none"
+        />
+        <input
+          type="text"
           placeholder="Username"
           name="username"
           onChange={(e) => handleChange(e)}
           className="bg-transparent p-4 rounded-lg border-solid border-2 border-[#4e0eff] text-white text-lg focus:border-2 focus:border-none"
         />
-        <input
-          type="email"
-          placeholder="Email"
-          name="email"
-          onChange={(e) => handleChange(e)}
-          className="bg-transparent p-4 rounded-lg border-solid border-2 border-[#4e0eff] text-white text-lg focus:border-2 focus:border-none"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          name="password"
-          onChange={handleChange}
-          className="bg-transparent p-4 rounded-lg border-solid border-2 border-[#4e0eff] text-white text-lg focus:border-2 focus:border-none"
-        />
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          name="confirmPassword"
-          onChange={(e) => handleChange(e)}
-          className="bg-transparent p-4 rounded-lg border-solid border-2 border-[#4e0eff] text-white text-lg focus:border-2 focus:border-none"
-        />
-
         <button
           type="submit"
           className="bg-[#997af0] text-white px-3 py-6 border-none font-bold cursor-pointer rounded-lg uppercase transition ease-in-out hover:bg-[#4e0eff]"

@@ -47,20 +47,49 @@ const Login = () => {
   const validateForm = () => {
     const { username, password } = values;
     if (username === "") {
-      toast.error("Email and Password is required.", toastOptions);
-      return false;
-    } else if (password === "") {
-      toast.error("Email and Password is required.", toastOptions);
+      toast.error("Username is required.", toastOptions);
       return false;
     }
     return true;
   };
+
   // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     if (validateForm()) {
+      let currentUser = await window.mina?.getAccounts();
+      if (currentUser.length == 0) {
+        await window.mina.requestAccounts().catch((err) => err);
+        currentUser = await window.mina?.getAccounts();
+      }
+
+      const content = `Click "Sign" to sign in. No password needed!
+
+     This request will not trigger a blockchain transaction or cost any gas fees.
+
+    I accept the Auro Test zkApp Terms of Service: ${window.location.href}
+
+     address: ${currentUser[0]}
+     iat: ${new Date().getTime()}`;
+
+      const signContent = {
+        message: content,
+      };
+
+      const signResult = await window.mina
+        ?.signMessage(signContent)
+        .catch((err) => err);
+
+      console.log(signResult);
+
+      // let verifyResult = await window.mina
+      //   ?.verifyMessage(signResult)
+      //   .catch((err) => err);
+
+      // console.log(verifyResult);
+
       const { username, password } = values;
-      const { data } = await axios.post(loginRoutes, {
+      const { data } = await axios.post(loginRoute, {
         username,
         password,
       });
@@ -73,15 +102,19 @@ const Login = () => {
           JSON.stringify(data.user)
         );
 
-        router.push("/");
+        navigate("/");
       }
     }
   };
 
+
   // JSX structure for the component
   return (
     <div className="h-screen  flex flex-col bg-[#131324] items-center justify-center w-auto">
-      <form className="flex flex-col gap-8 rounded-3xl bg-[#00000076] px-12 py-20">
+      <form
+        onSubmit={(e) => handleSubmit(e)}
+        className="flex flex-col gap-8 rounded-3xl bg-[#00000076] px-12 py-20"
+      >
         {/* Logo */}
         <div className="flex items-center justify-center w-auto">
           <Image src={Logo} alt="logo" className="h-10" />
@@ -96,17 +129,10 @@ const Login = () => {
           min="3"
           className="bg-transparent p-4 rounded-lg border-solid border-2 border-[#4e0eff] text-white text-lg focus:border-2 focus:border-none"
         />
-        <input
-          type="password"
-          placeholder="Password"
-          name="password"
-          onChange={(e) => handleChange(e)}
-          className="bg-transparent p-4 rounded-lg border-solid border-2 border-[#4e0eff] text-white text-lg focus:border-2 focus:border-none"
-        />
 
         {/* Submit button */}
         <button
-          onClick={handleSubmit}
+          type="submit"
           className="bg-[#997af0] text-white px-3 py-6 border-none font-bold cursor-pointer rounded-lg uppercase transition ease-in-out hover:bg-[#4e0eff]"
         >
           Login
