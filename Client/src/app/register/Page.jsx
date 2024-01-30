@@ -24,11 +24,10 @@ const Register = () => {
   const [values, setValues] = useState({
     name: "",
     username: "",
-   
   });
   const checkLocalStorage = () => {
     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-      router.push("/");
+      // router.push("/");
     }
   };
 
@@ -97,7 +96,7 @@ const Register = () => {
           process.env.REACT_APP_LOCALHOST_KEY,
           JSON.stringify(data.user)
         );
-        navigate("/");
+        router.push("/setAvatar");
       }
     }
   };

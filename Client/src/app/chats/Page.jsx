@@ -42,19 +42,26 @@ const Chats = () => {
     connectSocketIfUserExists();
   }, [currentUser]);
 
-  const fetchContactsIfAvatarSet = async () => {
+  const fetchData = async () => {
     if (currentUser) {
       if (currentUser.isAvatarImageSet) {
-        const data = await axios.get(`${allUserRoute}/${currentUser._id}`);
-        setContacts(data.data);
+        try {
+          const response = await axios.get(
+            `${allUserRoute}/${currentUser._id}`
+          );
+          setContacts(response.data);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          // Handle error appropriately
+        }
       } else {
-        router.push("/");
+        router.push("/setAvatar");
       }
     }
   };
 
   useEffect(() => {
-    fetchContactsIfAvatarSet();
+    fetchData();
   }, [currentUser]);
 
   const handleChatChange = (chat) => {

@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Logo from "@/images/logo.svg"; // Adjust the path to your logo SVG
 import Image from "next/image";
 import axios from "axios";
-import { loginRoutes } from "@/utils/APIRoutes";
+import { loginRoute } from "@/utils/APIRoutes";
 import { useRouter } from "next/navigation";
 
 // Move toast options outside the component function
@@ -30,7 +30,7 @@ const Login = () => {
   };
   const checkLocalStorageAndRedirect = () => {
     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-      router.push("/");
+      // router.push("/");
     }
   };
 
@@ -102,11 +102,10 @@ const Login = () => {
           JSON.stringify(data.user)
         );
 
-        navigate("/");
+        router.push("/chats");
       }
     }
   };
-
 
   // JSX structure for the component
   return (
