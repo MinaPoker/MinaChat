@@ -52,7 +52,6 @@ const Chats = () => {
           setContacts(response.data);
         } catch (error) {
           console.error("Error fetching data:", error);
-          // Handle error appropriately
         }
       } else {
         router.push("/setAvatar");
