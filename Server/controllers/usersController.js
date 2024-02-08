@@ -1,4 +1,4 @@
-const User = require("../controllers/userController");
+const User = require("../model/userModel");
 const bcrypt = require("bcrypt");
 
 module.exports.login = async (req, res, next) => {
