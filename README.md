@@ -18,7 +18,7 @@ cd Client
 npm install
 
 # Step 5: Start the Client
-npm start
+npm run dev 
 
 # Step 6: Navigate back to MinaChat Directory
 cd ..
@@ -31,3 +31,6 @@ npm install
 
 # Step 9: Start the Server
 npm start
+
+# Step 10: change the url to localhost:3000/register
+register then select the avatar then go it will redirect you to chats now start chatting with friends
