@@ -3,7 +3,7 @@ import Logout from "./Logout";
 import ChatInput from "./ChatInput";
 import axios from "axios";
 import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
-import { v4 as uuidv4 } from "uuid";
+import {v4 as uuidv4} from "uuid"
 
 const ChatContainer = ({ currentChat, curentUser, socket }) => {
   const [messages, setMessages] = useState([]);
@@ -25,17 +25,21 @@ const ChatContainer = ({ currentChat, curentUser, socket }) => {
     fetchMessagesForCurrentChat();
   }, [currentChat]);
 
+
+
   const retrieveCurrentUserId = async () => {
     if (currentChat) {
       const userId = await JSON.parse(
         localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
       )._id;
+
     }
   };
 
   useEffect(() => {
     retrieveCurrentUserId();
   }, [currentChat]);
+
 
   const handleSendMsg = async (msg) => {
     const data = await JSON.parse(
@@ -57,33 +61,33 @@ const ChatContainer = ({ currentChat, curentUser, socket }) => {
     setMessages(msgs);
   };
 
-  const setupSocketEventListeners = () => {
-    if (socket.current) {
-      socket.current.on("msg-recieve", (msg) => {
-        setArrivalMessage({ fromSelf: false, message: msg });
-      });
-    }
-  };
+   const setupSocketEventListeners = () => {
+     if (socket.current) {
+       socket.current.on("msg-recieve", (msg) => {
+         setArrivalMessage({ fromSelf: false, message: msg });
+       });
+     }
+   };
 
-  const updateMessagesOnArrival = () => {
-    arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
-  };
+   const updateMessagesOnArrival = () => {
+     arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
+   };
 
-  const scrollIntoViewOnMessagesChange = () => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+   const scrollIntoViewOnMessagesChange = () => {
+     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+   };
 
-  useEffect(() => {
-    setupSocketEventListeners();
-  }, []);
+   useEffect(() => {
+     setupSocketEventListeners();
+   }, []);
 
-  useEffect(() => {
-    updateMessagesOnArrival();
-  }, [arrivalMessage]);
+   useEffect(() => {
+     updateMessagesOnArrival();
+   }, [arrivalMessage]);
 
-  useEffect(() => {
-    scrollIntoViewOnMessagesChange();
-  }, [messages]);
+   useEffect(() => {
+     scrollIntoViewOnMessagesChange();
+   }, [messages]);
 
   return (
     <>
