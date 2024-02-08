@@ -137,7 +137,7 @@ const Login = () => {
           Login
         </button>
         <span className="text-white uppercase">
-          Don't have an account?{" "}
+          Dont have an account?{" "}
           <Link href="/register" className="text-[#4e0eff]">
             Register
           </Link>

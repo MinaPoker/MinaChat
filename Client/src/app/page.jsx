@@ -1,10 +1,10 @@
-import Image from "next/image";
-import Chats from "./chats/page"
+
+import Login from "./login/page";
 
 export default function Home() {
   return (
     <div>
-          Home
+      <Login />
     </div>
   );
 }
